@@ -14,6 +14,9 @@ jobs:
       # Step 1: Check out the code from the repository
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+            repository: vinod812/bootstrap
+            token: ${{ secrets.GITHUB_TOKEN }}  # Ensures access to private repositories if needed
 
       # Step 2: Set up Terraform
       - name: Set up Terraform
@@ -22,11 +25,13 @@ jobs:
           terraform_version: 1.5.0  # Specify the Terraform version
 
       # Step 3: Configure AWS credentials using environment variables
-      - name: Configure AWS Credentials
-        env:
-          AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-        run: echo "AWS credentials configured"
+      - name: Configure AWS Credentials   
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::904233114550:role/vvrole
+          #aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          #aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: us-east-2  # Replace with your AWS region
 
       # Step 4: Initialize Terraform
       - name: Terraform Init
