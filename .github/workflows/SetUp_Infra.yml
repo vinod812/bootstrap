@@ -1,9 +1,9 @@
-name: bootstrap create vpc, subnet and other infra
+name: Create vpc and other infra
 
 on:
-  push:
-    branches:
-      - main  # or the branch you want to monitor
+  #push:
+    #branches:
+      #- main  # or the branch you want to monitor
   workflow_dispatch: # Allow manual trigger
       
 permissions:

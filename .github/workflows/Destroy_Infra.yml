@@ -1,13 +1,13 @@
-name: bootstrap delete vpc, subnet and other infra
+name: Delete vpc and other infra
 
 on:
-  push:
-    branches:
-      - main  # or the branch you want to monitor
+  #push:
+    #branches:
+      #- main  # or the branch you want to monitor
   workflow_dispatch: # Allow manual trigger
       
 permissions:
-    id-token: write   # This is required for requesting the JWT
+    id-token: write    # Required for OIDC
     contents: write  
 jobs:
   build:
@@ -26,7 +26,6 @@ jobs:
         with:
           terraform_version: 1.5.0  # Specify the Terraform version
         
-
       # Step 3: Configure AWS credentials for S3 upload
       - name: Configure AWS Credentials   
         uses: aws-actions/configure-aws-credentials@v3
@@ -37,5 +36,9 @@ jobs:
           aws-region: us-east-2  # Replace with your AWS region
 
       # Step 4: Initialize Terraform
+      - name: Terraform Init
+        run: terraform init  
+
+      # Step 5: Initialize Destroy
       - name: Terraform Destroy
-        run: terraform destroy
+        run: terraform destroy -auto-approve  # Automatically approve the destroy
