@@ -1,36 +1,44 @@
-name: Build and Deploy to AWS
+name: Terraform Workflow
 
 on:
   push:
     branches:
-      - main  # or the branch you want to monitor
-  workflow_dispatch: # Allow manual trigger
+      - main  # Run this workflow on pushes to the main branch
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  terraform:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
 
     steps:
-      # Step 1: Check out the code from GitHub
+      # Step 1: Check out the code from the repository
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-            repository: vinod812/vv20
-            token: ${{ secrets.GITHUB_TOKEN }}  # Ensures access to private repositories if needed
 
-      # Step 2: Set up Java
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      # Step 2: Set up Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
         with:
-          java-version: '11'  # Change to your Java version
+          terraform_version: 1.5.0  # Specify the Terraform version
 
-      # Step 3: Build the project
-      - name: Build with Maven
-        run: mvn clean package
+      # Step 3: Configure AWS credentials using environment variables
+      - name: Configure AWS Credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: echo "AWS credentials configured"
 
-      # Step 4: Upload the WAR file as an artifact (optional)
-      - name: Upload WAR file
-        uses: actions/upload-artifact@v3
-        with:
-          name: my-war-file
-          path: target/*.war
+      # Step 4: Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+
+      # Step 5: Validate Terraform configuration
+      - name: Terraform Validate
+        run: terraform validate
+
+      # Step 6: Plan Terraform changes
+      - name: Terraform Plan
+        run: terraform plan
+
+      # Step 7: Apply Terraform changes (if desired)
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
