@@ -1,4 +1,4 @@
-name: bootstrap delete vpc, subnet and other infra
+name: Delete vpc and other infra
 
 on:
   #push:
