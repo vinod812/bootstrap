@@ -1,0 +1,45 @@
+name: bootstrap CI Pipeline
+
+on:
+  push:
+    branches:
+      - main  # or the branch you want to monitor
+  workflow_dispatch: # Allow manual trigger
+      
+permissions:
+    id-token: write   # This is required for requesting the JWT
+    contents: write  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+            repository: vinod812/bootstrap
+            token: ${{ secrets.GITHUB_TOKEN }}  # Ensures access to private repositories if needed
+
+      # Step 2: Set up Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0  # Specify the Terraform version
+        
+
+      # Step 3: Configure AWS credentials for S3 upload
+      - name: Configure AWS Credentials   
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::904233114550:role/vvrole
+          #aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          #aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: us-east-2  # Replace with your AWS region
+
+      # Step 4: Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+        
+      # Step 5: Plan Terraform changes
+      - name: Terraform Plan
+        run: terraform plan
