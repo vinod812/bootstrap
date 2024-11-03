@@ -1,4 +1,4 @@
-name: Create vpc, subnet and other infra
+name: Create vpc and other infra
 
 on:
   #push:
