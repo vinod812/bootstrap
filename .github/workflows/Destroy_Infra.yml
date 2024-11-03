@@ -1,4 +1,4 @@
-name: bootstrap CI Pipeline
+name: bootstrap delete vpc, subnet and other infra
 
 on:
   push:
@@ -37,9 +37,5 @@ jobs:
           aws-region: us-east-2  # Replace with your AWS region
 
       # Step 4: Initialize Terraform
-      - name: Terraform Init
-        run: terraform init
-        
-      # Step 5: Plan Terraform changes
-      - name: Terraform Plan
-        run: terraform plan
+      - name: Terraform Destroy
+        run: terraform destroy
